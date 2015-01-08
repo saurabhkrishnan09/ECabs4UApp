@@ -1,0 +1,78 @@
+#popup_container {
+    font-family: Tahoma,Helvetica,Verdana !important;
+    font-size: 12px !important;
+    min-width: 300px !important; /* Dialog will be no smaller than this */
+    max-width: 600px !important; /* Dialog will wrap after this width */
+    background: #FFF !important;
+    border: solid 1px #C4E3F2 !important;
+    color: #000 !important;
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+    border-radius: 5px !important;
+}
+
+#popup_title {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    line-height: 1.75em !important;
+    color: #3DA3D3 !important;
+    background: #E4F3FA !important;
+    /*border: solid 1px #C4E3F2!important;*/
+    border-bottom: solid 1px #C4E3F2 !important;
+    cursor: default !important;
+    padding: 0em !important;
+    margin: 0em !important;
+    font-family: Tahoma,Helvetica,Verdana !important;
+}
+
+#popup_content {
+    background: 16px 16px no-repeat url(info.gif) !important;
+    padding: 1em 1.75em !important;
+    margin: 0em !important;
+    font-family: Tahoma,Helvetica,Verdana !important;
+    font-size: 11px !important;
+}
+
+#popup_ok, #popup_cancel {
+    background-clip: initial !important;
+    padding: 1.75% 12% !important;
+}
+
+#popup_content.alert {
+    background-image: url(important.gif) !important;
+}
+
+#popup_content.confirm {
+    background-image: url(important.gif) !important;
+}
+
+#popup_content.prompt {
+    background-image: url(info.gif) !important;
+}
+
+#popup_message {
+    padding-left: 48px !important;
+    font-size: 15px;
+    text-align: justify;
+}
+
+#popup_panel {
+    text-align: center !important;
+    margin: 1em 0em 0em 1em !important;
+}
+
+#popup_prompt {
+    margin: .5em 0em !important;
+}
+
+.btnOK {
+    margin: .2em 0 0 1.5em !important;
+    padding: .2em !important;
+    border: 1px solid #AED7FF !important;
+    background-color: #F1F7EE !important;
+    font-family: Tahoma,Helvetica,Verdana !important;
+    font-weight: bold !important;
+    color: #3DA3D3 !important;
+    cursor: pointer !important;
+}
