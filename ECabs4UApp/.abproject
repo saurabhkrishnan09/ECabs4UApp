@@ -1,0 +1,37 @@
+{
+  "ProjectName": "ECabs4UApp",
+  "ProjectGuid": "cd7272e0-f3b5-4a4a-b97c-2bde00131ea7",
+  "projectVersion": 1,
+  "AppIdentifier": "com.telerik.ECabs4UApp",
+  "DisplayName": "ECabs4UApp",
+  "Author": "",
+  "Description": "",
+  "BundleVersion": "1.0",
+  "AndroidVersionCode": "1",
+  "iOSDeviceFamily": [
+    "1",
+    "2"
+  ],
+  "iOSBackgroundMode": [],
+  "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
+  "FrameworkVersion": "3.5.0",
+  "AndroidPermissions": [],
+  "DeviceOrientations": [
+    "Portrait",
+    "Landscape"
+  ],
+  "AndroidHardwareAcceleration": "false",
+  "iOSStatusBarStyle": "Default",
+  "Framework": "Cordova",
+  "WP8TileTitle": "",
+  "WP8Publisher": "",
+  "WP8Capabilities": [],
+  "WP8Requirements": [],
+  "WP8PublisherID": "{3c609b0a-1679-405d-aaf2-e71236faaaa5}",
+  "WP8ProductID": "{42834bfb-e3e3-4017-a637-48e1fddf095c}",
+  "WP8SupportedResolutions": [
+    "ID_RESOLUTION_WVGA",
+    "ID_RESOLUTION_WXGA",
+    "ID_RESOLUTION_HD720P"
+  ]
+}
