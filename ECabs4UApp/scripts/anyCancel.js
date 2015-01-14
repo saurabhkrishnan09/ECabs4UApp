@@ -13,7 +13,7 @@ function CancelJob(jobId) {
         }
         else if (buttonIndex === 1) {
 
-            var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/CancelJob";
+            var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/CancelJob";
 
             $.ajax(url, {
                 beforeSend: function () {
@@ -61,7 +61,7 @@ function CancelDriver(jobID, driverid) {
         }
         else if (buttonIndex === 1) {
             $.ajax({
-                url: "http://192.168.1.22/ECabs/ECabs4U.asmx/CancelDriverForJob",
+                url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/CancelDriverForJob",
                 type: "POST",
                 datatype: "json",
                 data: "{'jobID':'" + jobID + "','driverID':'" + driverid + "','customerID':'" + relatedId + "'}",

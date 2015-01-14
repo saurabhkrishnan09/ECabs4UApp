@@ -1,0 +1,8 @@
+{
+  "ProjectName": "ECabs4UAppMobileTesting",
+  "ProjectGuid": "0c4de69a-870e-4e31-a83b-447afb42a9d9",
+  "projectVersion": 1,
+  "ProjectTypeGuids": "{6319b66f-8dff-4073-91be-3cd48a2fdeb3}",
+  "FrameworkVersion": "1.0",
+  "Framework": "MobileTesting"
+}

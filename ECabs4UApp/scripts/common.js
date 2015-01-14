@@ -150,11 +150,9 @@ function showConfirm(param, jobId) {
 
 }
 
-jobCheckTime = window.setInterval(CheckNewJob, 5000);
 function CheckNewJob() {
-    if (roleId == 3 || roleId == 7 && relatedId > 0) {
-        $.ajax({
-        url: 'http://115.115.159.126/ECabs/ECabs4U.asmx/CheckNewJob',
+    $.ajax({
+        url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/CheckNewJob',
         type: "POST",
         datatype: "json",
         data: "{'userID':'" + relatedId + "'}",
@@ -166,12 +164,8 @@ function CheckNewJob() {
                 var isvisited = data.d[2];
                 var jobId = data.d[3];
                 var isEngaged = data.d[4];
-                    console.log(jobType);
-                    console.log(isvisited);
-                    console.log(jobId);
-                    console.log(isEngaged);
                 if (isvisited === "False") {
-                        console.log(jobType === "True" && isEngaged === "False");
+                    console.log(jobType === "True" && isEngaged === "False");
                     if (jobType === "True" && isEngaged === "False") {
 
                         showConfirm(1, jobId);
@@ -187,7 +181,6 @@ function CheckNewJob() {
             //GetCancelledJobs();
         },
     });
-    }
 }
 
 
@@ -203,7 +196,7 @@ function seeRequest() {
 
 function closeRequest() {
     $.ajax({
-        url: 'http://115.115.159.126/ECabs/ECabs4U.asmx/CancelNewJobDNotification',
+        url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/CancelNewJobDNotification',
         type: "POST",
         datatype: "json",
         data: "{'relatedId':'" + relatedId + "','jobId':'" + jobID + "'}",
@@ -214,7 +207,7 @@ function closeRequest() {
     });
 }
 
-window.setInterval(GetCancelledJobs, 5000);
+
 function closeModalView() {
     $("#modalview-JobDetailWithFeedbackHistory").kendoMobileModalView("close");
     $("#modalview-CabLaterJobDetail").kendoMobileModalView("close");
@@ -232,38 +225,40 @@ function closeModalView() {
     $("#modalview-CabCommissionPayment").kendoMobileModalView("close");
 }
 
+GetCancelledJobsTimer = window.setInterval(GetCancelledJobs, 9000);
 function GetCancelledJobs() {
     if (roleId > 0 && relatedId > 0) {
-        $.ajax({
-            url: 'http://115.115.159.126/ECabs/ECabs4U.asmx/GetAllCancelledJobs',
-            type: "POST",
-            datatype: "json",
-            data: "{'relId':'" + relatedId + "','roleId':'" + roleId + "'}",
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                if (data != null)
-                    for (var i = 0 ; i < data.d.length; i++) {
-                        jobId = data.d[i].CustomeeRequestID;
-                        expJobId = data.d[i].ID;
-                        expReason = data.d[i].ExpiryReason;
-                        expiryCount += 1;
-                        cancelledBy = data.d[i].CancelledByID;
-                        var textToShow = "Sorry the job " + jobId + " has been cancelled by ";
-                        if (roleId == 4) //For Customer show that driver has cancelled it.
-                            textToShow += "driver";
-                        else if (roleId == 7 || roleId == 3) //For Driver show that customer has cancelled it.
+        if (app.application.view().id == "#Profile" || app.application.view().id == "#driverBids" || app.application.view().id == "#History" || app.application.view().id == "#driverHome")
+            $.ajax({
+                url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetAllCancelledJobs',
+                type: "POST",
+                datatype: "json",
+                data: "{'relId':'" + relatedId + "','roleId':'" + roleId + "'}",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data != null)
+                        for (var i = 0 ; i < data.d.length; i++) {
+                            jobId = data.d[i].CustomeeRequestID;
+                            expJobId = data.d[i].ID;
+                            expReason = data.d[i].ExpiryReason;
+                            expiryCount += 1;
+                            cancelledBy = data.d[i].CancelledByID;
+                            var textToShow = "Sorry the job " + jobId + " has been cancelled by ";
+                            // if (roleId == 4) //For Customer show that driver has cancelled it.
+                            // textToShow += "driver";
+                            // else if (roleId == 7 || roleId == 3) //For Driver show that customer has cancelled it.
                             textToShow += "customer";
-                        textToShow += ".\nReason- " + expReason;
-                        if (parseInt(relatedId) === cancelledBy) {
-                            navigator.notification.confirm(textToShow, onOKDeleteExpiredJob(expJobId), 'Cancelled Job', 'OK');
+                            textToShow += ".\nReason- " + expReason;
+                            if (parseInt(relatedId) === cancelledBy && roleId != 4) {
+                                navigator.notification.confirm(textToShow, onOKDeleteExpiredJob(expJobId), 'Cancelled Job', 'OK');
+                            }
                         }
-                    }
-            }
-        });
+                }
+            });
         function onOKDeleteExpiredJob(expJobId) {
             if (expiryCount >= 2) {
                 $.ajax({
-                    url: 'http://115.115.159.126/ECabs/ECabs4U.asmx/DeleteAnyCancelledJob',
+                    url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/DeleteAnyCancelledJob',
                     type: "POST",
                     datatype: "json",
                     data: "{'expiredJobId':'" + expJobId + "'}",
@@ -279,6 +274,8 @@ function GetCancelledJobs() {
             }
         }
     }
+    else
+        window.clearInterval(GetCancelledJobsTimer);
 }
 function getProperTime(giventime) {
     var hrs = Number(giventime.split(":")[0]);
@@ -323,7 +320,7 @@ function reStartTimer(timerId, intervalTime, funcToCall) {
 
 function showRating(DriverID) {
     $.ajax({
-        url: "http://192.168.1.22/ECabs/ECabs4U.asmx/GetRatingFeedback",
+        url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetRatingFeedback",
         type: "POST",
         dataType: "Json",
         data: "{'driverID':'" + DriverID + "'}",
@@ -407,42 +404,42 @@ var btnArraycustomer = ['Search', 'Alter', 'Cancel'];
 
 //window.setInterval(checkFailedJob, 10000);
 function checkFailedJob() {
+    if (app.application.view().id == "#search" || app.application.view().id == "#Profile" || app.application.view().id == "#driverBids" || app.application.view().id == "#History" || app.application.view().id == "#customerBooking" || app.application.view().id == "#driverHome")
+        $.ajax({
+            url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetFailedJobs",
+            datatype: "JSON",
+            type: "POST",
+            data: "{'relatedId':'" + relatedId + "','role':'" + roleId + "'}",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                var count = data.d.length;
+                if (count > 0) {
+                    for (var i = 0; i < count; i++) {
+                        jobID = data.d[i]["JobNumber"];
 
-    $.ajax({
-        url: "http://192.168.1.22/ECabs/ECabs4U.asmx/GetFailedJobs",
-        datatype: "JSON",
-        type: "POST",
-        data: "{'relatedId':'" + relatedId + "','role':'" + roleId + "'}",
-        contentType: "application/json; charset=utf-8",
-        success: function (data) {
-            var count = data.d.length;
-            if (count > 0) {
-                for (var i = 0; i < count; i++) {
-                    jobID = data.d[i]["JobNumber"];
+                    }
 
-                }
-
-                if (roleId == 4)//customer
-                {
-                    navigator.notification.confirm(
-                  "Cab search has failed for an unknown reason. Would you like to",
-                   onCallbackCustomerFailedJob,
-                  "Failed job notification",
-                  btnArraycustomer
-                 );
-                }
-                else if (roleId == 3)//driver
-                {
-                    navigator.notification.confirm(
-                    "You have some failed jobs. Do you want to re-initiate them?",
-                     onCallbackDriverFailedJob,
-                    "Failed job notification",
-                    btnArrayDriver
-                   );
+                    if (roleId == 4)//customer
+                    {
+                        navigator.notification.confirm(
+                      "Cab search has failed for an unknown reason. Would you like to",
+                       onCallbackCustomerFailedJob,
+                      "Failed job notification",
+                      btnArraycustomer
+                     );
+                    }
+                    else if (roleId == 3)//driver
+                    {
+                        navigator.notification.confirm(
+                        "You have some failed jobs. Do you want to re-initiate them?",
+                         onCallbackDriverFailedJob,
+                        "Failed job notification",
+                        btnArrayDriver
+                       );
+                    }
                 }
             }
-        }
-    });
+        });
     //}, 1000);
 }
 
@@ -452,6 +449,9 @@ function onCallbackCustomerFailedJob(buttonIndex) {
         app.application.navigate('#customerFailedJobs');
     }
     else if (buttonIndex == 2) {
+        //alert(jobID);
+        jobID == jobID;
+        //onbeforeSearch();
         app.application.navigate('#search');
 
     }
@@ -480,97 +480,107 @@ function onCallbackDriverFailedJob(buttonIndex) {
     }
 }
 
-if (roleId == 4) {
-    //alert(roleId);
-
-}
 
 
 //Cancelled job for customer
 
+GetCancelledJobsForCustomerTimer = window.setInterval(GetCancelledJobsForCustomer, 11000);
+
+
 function GetCancelledJobsForCustomer() {
+    if (roleId > 0 && roleId == 4) {
+        if (app.application.view().id == "#search" || app.application.view().id == "#Profile" || app.application.view().id == "#History" || app.application.view().id == "#customerBooking")
+            $.ajax({
+            url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetCancelledJobsForCustomer',
+            type: "POST",
+            datatype: "json",
+            data: "{'custId':'" + relatedId + "'}",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
 
-    $.ajax({
-        url: 'http://115.115.159.126/ecabs/ECabs4U.asmx/GetCancelledJobsForCustomer',
-        type: "POST",
-        datatype: "json",
-        data: "{'custId':'" + relatedId + "'}",
-        contentType: "application/json; charset=utf-8",
-        success: function (data) {
 
-
-            for (var i = 0 ; i < data.d.length; i++) {
-                var jobId = data.d[i].CustomeeRequestID;
-                CustId = data.d[i].CustomerID;
-                CustexpJobId = data.d[i].ID;
-                drvId = data.d[i].DriverID;
-                expReason = data.d[i].ExpiryReason;
-                cancelledBy = data.d[i].CancelledByID;
-                var CabNow = data.d[i].isCabNow;
-                if (parseInt(relatedId) === cancelledBy) {
-                    // console.log("in");
-                    // alert(CabNow);
-                    if (CabNow == null) {
-                        navigator.notification.confirm(
-
-                         "Sorry, JobNo " + jobId + " cancelled by driver. \nReason- " + expReason,
-                          onOKDeleteExpiredJobForCustomer(CustexpJobId),
-                         'Cancelled Job',
-                         "OK"
-                        );
-
-                    }
-                    else {
-                        navigator.notification.confirm(
-                            "Sorry, JobNo " + jobId + " cancelled by driver. \nReason- " + expReason,
-                            onClickSearchagain,
-                            "Confirm",
-                            "Re-Search,OK"
+                for (var i = 0 ; i < data.d.length; i++) {
+                    var jobId = data.d[i].CustomeeRequestID;
+                    CustId = data.d[i].CustomerID;
+                    CustexpJobId = data.d[i].ID;
+                    drvId = data.d[i].DriverID;
+                    expReason = data.d[i].ExpiryReason;
+                    cancelledBy = data.d[i].CancelledByID;
+                    var CabNow = data.d[i].isCabNow;
+                    if (parseInt(relatedId) === cancelledBy) {
+                        console.log("in");
+                        cancelledBy = "";
+                        // alert(CabNow);
+                        //alert(CustexpJobId);
+                        //Job still not booked and was in process then Go in IF condition below
+                        if (CabNow == null) {
+                            cancelledJOb = undefined;
+                            navigator.notification.confirm(
+                             "Sorry, JobNo " + jobId + " cancelled by driver. \nReason- " + expReason,
+                              onOKDeleteExpiredJobForCustomer(CustexpJobId),
+                             'Cancelled Job',
+                             "OK"
                             );
 
-                        function onClickSearchagain(buttonIndex) {
-                            if (buttonIndex == 2) {
-                                onOKDeleteExpiredJobForCustomer(CustexpJobId);
-                            }
-                            else if (buttonIndex == 1) {
-                                // alert(CabNow);
-                                if (CabNow === "True") {
-                                    var cancelledJobData;
-                                    app.application.navigate('#search');
-                                    onOKDeleteExpiredJobForCustomer(CustexpJobId);
-                                }
-                                else if (CabNow === "False") {
-                                    var cancelledJobDataFuture;
-                                    app.application.navigate('#Search');
-                                    iscisCabNow = false;
-                                    onOKDeleteExpiredJobForCustomer(CustexpJobId);
-                                }
-
-                            }
                         }
+                            //Job got booked but later on cancelled by driver then Go in ELSE condition below
+                        else {
 
+                            navigator.notification.confirm(
+                                "Sorry, JobNo " + jobId + " cancelled by driver. \nReason- " + expReason,
+                                onClickSearchagain,
+                                "Confirm",
+                                "Re-Search,OK"
+                                );
+
+                            function onClickSearchagain(buttonIndex) {
+                                if (buttonIndex == 2) {
+                                    onOKDeleteExpiredJobForCustomer(CustexpJobId);
+                                }
+                                else if (buttonIndex == 1) {
+                                    if (CabNow === "True") {
+                                        isCabNow = true;
+                                    }
+                                    else if (CabNow === "False") {
+                                        isCabNow = false;
+                                    }
+                                    onOKDeleteExpiredJobForCustomer(CustexpJobId);
+
+                                    jobID = cancelledJOb = jobId;
+                                    console.log(cancelledJOb);
+                                    console.log(jobID);
+                                    console.log("going to Search page");
+                                    app.application.navigate('#search');
+
+                                }
+                            }
+
+                        }
+                        function onOKDeleteExpiredJobForCustomer(CustexpJobId) {
+                            console.log("in Delete ExpiredJob")
+                            $.ajax({
+                                url: 'http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/DeleteCancelledJob',
+                                type: "POST",
+                                datatype: "json",
+                                data: "{'expiredJobId':'" + CustexpJobId + "','driverId':'" + relatedId + "'}",
+                                contentType: "application/json; charset=utf-8",
+                                success: function () {
+                                    console.log("in Delete ExpiredJob DONE")
+                                    //$('#transparent_div').hide();
+                                    //app.application.navigate('#search');
+                                }
+                            });
+
+                        }
                     }
-
                 }
             }
-        }
-    });
+        });
+    }
+    else
+        window.clearInterval(GetCancelledJobsForCustomerTimer);
 }
-function onOKDeleteExpiredJobForCustomer(CustexpJobId) {
 
-    $.ajax({
-        url: 'http://115.115.159.126/ecabs/ECabs4U.asmx/DeleteCancelledJob',
-        type: "POST",
-        datatype: "json",
-        data: "{'expiredJobId':'" + CustexpJobId + "','driverId':'" + relatedId + "'}",
-        contentType: "application/json; charset=utf-8",
-        success: function () {
-            //$('#transparent_div').hide();
-
-        }
-    });
-
-}
 
 function clearAllTimerFunctions() {
     window.clearInterval(JobOffersTimer);
@@ -578,6 +588,7 @@ function clearAllTimerFunctions() {
     window.clearInterval(customerBookingTimer);
     window.clearInterval(cancelledJobCustomerTimer);
     window.clearInterval(failedJObTimer);
+    window.clearInterval(jobCheckTime);
 }
 function beforeRecovery() {
     $("#lblPasswordRecoveryMsg")[0].innerHTML = '';

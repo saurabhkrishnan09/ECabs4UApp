@@ -1,30 +1,37 @@
 function onbeforeSearch() {
+    console.log("serach page loaded");
     GetCurrentLocation();
     if (jobID != undefined) {
+        console.log("in cancelledJob");
         if (cancelledJOb != undefined) {
+            console.log("in JobDetail");
+            //This function checks job in CabNow table
             $.ajax({
-                url: "http://115.115.159.126/ecabs/ECabs4U.asmx/JobDetail",
+                url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/JobDetail",
                 type: "POST",
                 dataType: "Json",
                 data: "{'jobId':'" + jobID + "'}",
                 contentType: "application/json; charset=utf-8",
                 success: cancelldJobFillAllData,
-            error: function (XMLHttpRequest, textStatus, errorThrown) { }
+                error: function (XMLHttpRequest, textStatus, errorThrown) { }
             });
         }
-        else {
+        else if (reinitiateJobID != undefined) {
+            console.log("in FillJobSearchDetail");
+            //This function checks job in CustomerSearch table
             $.ajax({
-                url: "http://115.115.159.126/ecabs/ECabs4U.asmx/FillJobSearchDetail",
+                url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/FillJobSearchDetail",
                 type: "POST",
                 dataType: "Json",
-                data: "{'requestID':'" + jobID + "'}",
+                data: "{'requestID':'" + reinitiateJobID + "'}",
                 contentType: "application/json; charset=utf-8",
+                //success: FillAllData,
                 success: FillAllData,
-            error: function (XMLHttpRequest, textStatus, errorThrown) { }
+                error: function (XMLHttpRequest, textStatus, errorThrown) { }
             });
         }
-    
-       
+
+
 
     }
     else
@@ -34,7 +41,7 @@ function onbeforeSearch() {
 
 
     function FillAllData(data) {
-
+        reinitiateJobID = undefined;
         //var count = data.d.length;
         //if (count > 0) {
         //    for (var i = 0; i < count; i++) {
@@ -66,7 +73,8 @@ function onbeforeSearch() {
     }
 
     //For cancelled job binding
-    function cancelldJobFillAllData(data) {   
+    function cancelldJobFillAllData(data) {
+        cancelledJOb = undefined;
         $('#txtFrom').val(data.d["FromLocation"]);
         $('#txtTo').val(data.d["ToLocation"]);
         $('#txt2location').val(data.d["Location2"]);
@@ -105,7 +113,7 @@ function onbeforeSearch() {
 function clearfields() {
     console.log("clearfields");
     From = To = fromloc = toloc = secondLoc = thirdLoc = fourthLoc =
-    fifthLoc = sixthLoc = seventhLoc = eightLoc = toloc = distance = 
+    fifthLoc = sixthLoc = seventhLoc = eightLoc = toloc = distance =
     totalpassenger = largecase = smallcase = WchairPassengers = childSeats = childBooster =
     otherSpeRequirement = '';
 
@@ -135,7 +143,7 @@ function clearfields() {
     $('#locseven').val('');
     IsCheckedTrue = false;
     isReturn = false;
-    document.getElementById("RBcabNOW").checked =  true;
+    document.getElementById("RBcabNOW").checked = true;
     isCabNow = true;
     isYes = true;
     isSpecReq = false;
@@ -152,7 +160,7 @@ function clearfields() {
     $('#btnbookreturn').show();
     $("#trReturn").hide();
     jobID = "";
-    document.getElementById("radcash").checked =  true;
+    document.getElementById("radcash").checked = true;
     isCreditCard = false;
     isSameDriver = false;
     setCabNowLater(true);
@@ -277,36 +285,43 @@ var fromDate, rtDate;
 
 $(function () {
     function startChange() {
-        var startDate = start.value(),
-                        endDate = end.value();
+        var startDate = start.value(), endDate = end.value();
         if (startDate) {
+            console.log("start1");
             startDate = new Date(startDate);
             startDate.setDate(startDate.getDate());
             end.min(startDate);
         } else if (endDate) {
-            start.max(new Date(endDate));
+            console.log("start2");
+            //start.max(new Date(endDate));
         } else {
+            console.log("start3");
             endDate = new Date();
-            start.max(endDate);
+            //start.max(endDate);
             end.min(endDate);
         }
     }
     function endChange() {
-        var endDate = end.value(),
-                     startDate = start.value();
+        var endDate = end.value(), startDate = start.value();
         if (endDate) {
+            console.log("end1");
             endDate = new Date(endDate);
             endDate.setDate(endDate.getDate());
-            start.max(endDate);
+            //start.max(endDate);
         } else if (startDate) {
+            console.log("end2");
             end.min(new Date(startDate));
         } else {
+            console.log("end3");
             endDate = new Date();
-            start.max(endDate);
+            //start.max(endDate);
             end.min(endDate);
         }
     }
-    var today = new Date(wholeMinute._d);
+
+    //var today = new Date(wholeMinute._d);
+    var today = wholeMinute._d;
+    console.log(today);
     isSameDriver = false;
     var start = $("#pickDate").kendoDateTimePicker({
         value: today,
@@ -316,11 +331,14 @@ $(function () {
         min: today
     }).data("kendoDateTimePicker");
     var end = $("#rtPickDate").kendoDateTimePicker({
+        value: today,
         change: endChange,
         format: "dd/MM/yyyy HH:mm",
         interval: 15,
-        min: start.value()
+        min: today//start.value()
     }).data("kendoDateTimePicker");
+
+    end.min(start.value());
 
     fromDate = $("#pickDate").data("kendoDateTimePicker");
     rtDate = $("#rtPickDate").data("kendoDateTimePicker");
@@ -352,7 +370,6 @@ function cancelSpReq() {
     $('#btnspecialreq').show();
     $('#btncancelreq').hide();
     $("#trSpReq").hide();
-    app.application.navigate("#search");
     isSpecReq = false;
 }
 function chkYesNoChange() {
@@ -649,12 +666,12 @@ function Validate() {
         { }
         return false;
     }
-       
+
     else if ($("#txtDistance").val() === "0.00 miles") {
         $('#lblMessage').text("Please select proper locations so as to calculate distance between them.");
         return false;
     }
-    
+
     else if (($("#btnbookreturn").is(":hidden")) && !($("#rtPickDate").val())) {
 
         $('#lblMessage').text("Please enter return Date.");
@@ -697,7 +714,7 @@ function availabledriver() {
     sixthLoc = $('#txt6location').val();
     seventhLoc = $('#txt7location').val();
     eightLoc = $('#txt8location').val();
-                       
+
     toloc = $('#txtTo').val();
     distance = $('#txtDistance').val();
     if (isCabNow == true) {
@@ -707,15 +724,15 @@ function availabledriver() {
         var y = currentDate.getFullYear();
         var h = currentDate.getHours();
         var mn = currentDate.getMinutes();
-                    }
-                    else {
+    }
+    else {
         var pickDateTime = fromDate.value();
         var d = pickDateTime.getDate();
         var m = pickDateTime.getMonth() + 1;
         var y = pickDateTime.getFullYear();
         var h = pickDateTime.getHours();
         var mn = pickDateTime.getMinutes();
-        }
+    }
     pickdate = (d + "/" + m + "/" + y);
     picktime = (h + ":" + mn);
     totalpassenger = $("#ddlpassenger option:selected").text();
@@ -748,7 +765,7 @@ function availabledriver() {
     latertopostcode = $('#locto_postcode').val();
     console.log(laterpostcode);
     $.ajax({
-        url: "http://192.168.1.22/ECabs/ECabs4U.asmx/CustomerSearchRequest",
+        url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/CustomerSearchRequest",
         cache: false,
         beforeSend: function () { showLoading(); },
         complete: function () { hideLoading(); },
@@ -762,6 +779,7 @@ function availabledriver() {
                 if (isCabNow == true)
                     app.application.navigate('#customerSearchList');
                 else {
+
                     navigator.notification.alert(
                   "Awaiting bids. Please check later.",
                     searchLater,

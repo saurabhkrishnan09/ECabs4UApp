@@ -33,7 +33,7 @@ function login() {
     }
     var isTrue = checkConnection();
     if (isTrue) {
-        var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/UserLogin";
+        var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/UserLogin";
         $.ajax(url, {
             beforeSend: function () {
                 showLoading();
@@ -51,7 +51,7 @@ function login() {
 
 function CheckMsg(data) {
     //console.log($("#imgLoader"));
-    hideLoading();
+    //hideLoading();
     var userID = data.d[1];
     var isChecked = $('#chkRem').prop('checked') ? true : false;
     if (data.d[0] === "true") {
@@ -59,7 +59,7 @@ function CheckMsg(data) {
 
         var roleID = parseInt(data.d[2]);
         var relatedID = data.d[3];
-        
+
         var name = $('#txtUserName').val();
         var password = $('#txtPassword').val();
 
@@ -92,7 +92,9 @@ function CheckMsg(data) {
                 userId = userID;
                 roleId = roleID;
                 relatedId = relatedID;
-                
+
+                //check new job timer start
+                jobCheckTime = window.setInterval(CheckNewJob, 5000);
                 app.application.navigate('#driverHome');
                 break;
                 //Role 4 --> Customer
@@ -106,10 +108,13 @@ function CheckMsg(data) {
         }
 
         //failed Job Timer start
-        //failedJObTimer = window.setInterval(checkFailedJob, 10000);
+        if (roleId > 0)
+            failedJObTimer = window.setInterval(checkFailedJob, 13000);
+        else
+            window.clearInterval(failedJObTimer);
     }
     else {
-        hideLoading();
+        //hideLoading();
         var unauthorised = data.d[0];
         if (unauthorised == "EmailNotVerified") {
             $('#myInputhidden').val(data.d[1]);
@@ -132,7 +137,7 @@ function CheckMsg(data) {
             $('#txtPassword').val("");
         }
     }
-    hideLoading();
+    //hideLoading();
 }
 function GetCurrentLocation() {
     console.log(navigator.geolocation);
@@ -166,7 +171,7 @@ function resendEmailVerification() {
     var intsOnly = /^\d+$/;
     if (intsOnly.test(userid)) {
         if (userid != "" || userid != " ") {
-            var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/lnkbtnresendVerificationLink";
+            var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/lnkbtnresendVerificationLink";
             $.ajax(url, {
                 beforeSend: function () {
                     showLoading();
@@ -208,7 +213,7 @@ function resetpwdlnk() {
 
     var username = $('#myInputhidden').val();
     if (username != "" || username != " ") {
-        var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/lnkbtnResendpwdlink";
+        var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/lnkbtnResendpwdlink";
         $.ajax(url, {
             beforeSend: function () { showLoading(); },
             complete: function () { hideLoading(); },
@@ -279,7 +284,7 @@ function showHideProfileControls() {
     $("#btnEdit").show();
 }
 function getCustProfile() {
-    var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/GetCustomerrDetails";
+    var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetCustomerrDetails";
     $.ajax(url, {
         beforeSend: function () { showLoading(); },
         complete: function () { hideLoading(); },
@@ -292,7 +297,7 @@ function getCustProfile() {
     });
 }
 function getDrvProfile() {
-    var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/GetDriverDetails";
+    var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/GetDriverDetails";
     $.ajax(url, {
         beforeSend: function () { showLoading(); },
         complete: function () { hideLoading(); },
@@ -335,7 +340,7 @@ function ShowDriverData(data) {
             myVehicles += "<td style='width:8%;text-align:center;height:20px;color:black'>" + Capacity + "</td>";
             myVehicles += "<td style='width:25%;text-align:center;height:20px;color:black'> ";
             if (isAuthorised === "false" || isAuthorised === "False") {
-                myVehicles += '<input type="button"  value="Select"  style="float:right; background-color:#0E8BB3;color:white;height:71%;width:80%;font-size:17px!important;border: 2px solid #0E8BB3;font-family:Calibri;border-radius:5px!important;outline:none!important;" onclick="SelectVehicle(\'' + vehAllocatedID + '\')"/></td>';
+                myVehicles += '<input type="button" class="specialBtn" value="Select"  style="float:right;width:80%;" onclick="SelectVehicle(\'' + vehAllocatedID + '\')"/></td>';
             }
             myVehicles += "</tr>";
         }
@@ -454,7 +459,7 @@ function UpdateProfile() {
             return false;
         }
         if (email.length > 0) {
-            if (!email.match(regExpEmail)){
+            if (!email.match(regExpEmail)) {
                 $("#lblValidation").show();
                 $("#lblValidation").text('Please enter a valid email address.');
                 $('txtEmailID').focus();
@@ -488,7 +493,7 @@ function UpdateProfile() {
     $.ajax({
         beforeSend: function () { showLoading(); },
         complete: function () { hideLoading(); },
-        url: "http://192.168.1.22/ECabs/ECabs4U.asmx/UpdateProfile",
+        url: "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/UpdateProfile",
         type: "post",
         dataType: "Json",
         data: "{'roleId':'" + roleId + "','relatedId':'" + relatedId + "','name':'" + name + "','lastname':'" + lastname + "','email':'" + email + "','phoneno':'" + phoneno + "','address1':'" + address1 + "','address2':'" + address2 + "','postcode':'" + postcode + "'}",
@@ -545,7 +550,7 @@ function ChangePaswords() {
         return false;
     }
 
-    var url = "http://192.168.1.22/ECabs/ECabs4U.asmx/ChangePassword";
+    var url = "http://ecabs4uservice.azurewebsites.net/ECabs4U.asmx/ChangePassword";
     $.ajax(url, {
         beforeSend: function () { showLoading(); },
         complete: function () { hideLoading(); },
@@ -583,10 +588,7 @@ function ShowStatus(data) {
         $('#txtNew').val("");
     }
 }
-function onbeforeChangePassword()
-{
-    alert(roleId);
-
+function onbeforeChangePassword() {
     if (roleId == 3 || roleId == 7) //For Driver
     {
         $('#DrvFooterChgPass').show();

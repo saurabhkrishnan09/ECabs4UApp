@@ -742,7 +742,9 @@ function showMap() {
         return false;
     }
     $("#modalview-MapContainer").kendoMobileModalView("open");
+    $("#HideMap").show();
     locFrom = locf;
+    console.log(locFrom);
     arrLoc[0] = $('#locone').val();
     arrLoc[1] = $('#loctwo').val();
     arrLoc[2] = $('#locthree').val();
@@ -751,6 +753,7 @@ function showMap() {
     arrLoc[5] = $('#locsix').val();
     arrLoc[6] = $('#locseven').val();
     locTo = loc2;
+    console.log(locTo);
     InitializeWaypoints();
 
 
@@ -758,7 +761,7 @@ function showMap() {
 }
 
 function InitializeWaypoints() {
-    //console.log.log("ArrayList = " + arrLoc.length);
+    console.log("ArrayList = " + arrLoc.length);
     for (var i = 0; i < arrLoc.length; i++) {
         if (arrLoc[i] != "") {
             waypts.push({
@@ -820,6 +823,7 @@ function initialize2() {
     directionsDisplay = new google.maps.DirectionsRenderer();
     var geocoder = new google.maps.Geocoder();
     var address = locFrom;
+    console.log(address);
     geocoder.geocode({ 'address': address }, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             latitude = results[0].geometry.location.lat();
@@ -858,12 +862,14 @@ function initialize2() {
 }
 
 function calcRoute2() {
+    console.log("hi");
     var request = {
         origin: locFrom,
         destination: locTo,
         travelMode: google.maps.TravelMode.DRIVING
     };
-
+    console.log(locFrom);
+    console.log(locTo);
     directionsService.route(request, function (response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
@@ -872,11 +878,12 @@ function calcRoute2() {
 }
 
 function calcRoute() {
+    console.log("in calc Route");
     var request = {
         origin: locFrom,
         destination: locTo,
-        optimizeWaypoints: true,
         waypoints: waypts,
+        optimizeWaypoints: false,
         travelMode: google.maps.TravelMode.DRIVING
     };
 
@@ -888,46 +895,47 @@ function calcRoute() {
 }
 function hideMap() {
     $("#modalview-MapContainer").kendoMobileModalView("close");
+    $("#HideMap").hide();
 }
+
 //Customer Map Ends
 
 //Driver Map Starts
-
+function hideMapDriver() {
+    $("#HideMapDriver").hide();
+    //$("#HideMap").show();
+    $("#modalview-MapContainer").kendoMobileModalView("close");
+    $("#modalview-JobDetailsNotification").kendoMobileModalView("open");
+}
 function showMapDriver() {
     waypts = [];
+    $("#modalview-JobDetailsNotification").kendoMobileModalView("close");
     $("#modalview-MapContainer").kendoMobileModalView("open");
-    locFrom = $('#lblFromLoc').text();
-    var loc1 = $('#lblLoc1').text();
-    var loc2 = $('#lblLoc2').text();
-    var loc3 = $('#lblLoc3').text();
-    var loc4 = $('#lblLoc4').text();
-    var loc5 = $('#lblLoc5').text();
-    var loc6 = $('#lblLoc6').text();
-    var loc7 = $('#lblLoc7').text();
-    if (loc1.length > 0) {
-        arrLoc[0] = $('#lblLoc1').text();
+    $("#HideMapDriver").show();
+    //$("#HideMap").hide();
+    locFrom = locF;
+    if (l1 != undefined) {
+        arrLoc[0] = l1;
     }
-    if (loc2.lenth > 0) {
-        arrLoc[1] = $('#lblLoc2').text();
+    if (l2 != undefined) {
+        arrLoc[1] = l2;
     }
-    if (loc3.lenth > 0) {
-        arrLoc[2] = $('#lblLoc3').text();
+    if (l3 != undefined) {
+        arrLoc[2] = l3;
     }
-    if (loc4.lenth > 0) {
-        arrLoc[3] = $('#lblLoc4').text();
+    if (l4 != undefined) {
+        arrLoc[3] = l4;
     }
-    if (loc5.lenth > 0) {
-        arrLoc[4] = $('#lblLoc5').text();
+    if (l5 != undefined) {
+        arrLoc[4] = l5;
     }
-    if (loc6.lenth > 0) {
-        arrLoc[5] = $('#lblLoc6').text();
+    if (l6 != undefined) {
+        arrLoc[5] = l6;
     }
-    if (loc7.lenth > 0) {
-        arrLoc[6] = $('#lblLoc7').text();
+    if (l7 != undefined) {
+        arrLoc[6] = l7;
     }
-
-    locTo = $('#lblToLoc').text();
-
+    locTo = locT;
     InitializeWaypoints();
 }
 

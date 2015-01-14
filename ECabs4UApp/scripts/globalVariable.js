@@ -68,18 +68,22 @@ var timerId, checkDealResp, anyMoreDriver = true;
 var timer;
 var reinitiateCounter;
 var dId, reqId, specS;
+var reinitiateJobID;
 
 var clearTimerId = '';
 
 var finalrating = 0;
 var cancelledJOb;
-
+var GetCancelledJobsForCustomerTimer;
+var GetCancelledJobsTimer;
 var JobOffersTimer;
 var driverBidTimer;
 var customerBookingTimer;
 var cancelledJobCustomerTimer;
 var failedJObTimer;
 var jobCheckTime;
+var getHistoryTimer;
+var locF, locT, l1, l2, l3, l4, l5, l6, l7;
 
 //Function for DateTime Calculation and can be used globally in full app 'STARTS'
 var currentdatetime = new Date();

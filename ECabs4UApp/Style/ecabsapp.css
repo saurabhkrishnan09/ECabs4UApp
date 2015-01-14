@@ -1,5 +1,8 @@
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    /*overflow-x: hidden;*/
+     -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 @-ms-viewport {
@@ -188,6 +191,8 @@ center {
     color: white !important;
     border: 1px solid #2D82D0 !important;
     background-color: #2D82D0 !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
     .specialBtn:active {
@@ -248,7 +253,7 @@ a:visited {
     position: static;
 }
 
-input[type="text"], input[type="password"], input[type="tel"] {
+input[type="text"], input[type="password"], input[type="tel"],select {
     width: 80%;
     border-radius: 5px;
     height: 34px;
@@ -281,7 +286,7 @@ textarea {
     resize: none;
 }
 
-input[type="text"]:focus, input[type="password"]:focus, input[type="tel"]:focus {
+input[type="text"]:focus, input[type="password"]:focus, input[type="tel"]:focus, select:focus {
     border-collapse: collapse;
     outline: none;
     border: 1px solid #2A81CF;
@@ -475,8 +480,8 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="tel"]:focus 
     text-align: center !important;
     font-family: Calibri;
     color: #fff;
-    border: 1px solid #088A29;
-    background-color: #8B0000;
+    border: 1px solid #088A29 !important;
+    background-color: #8B0000 !important;
 }
 
 .km-loader {
@@ -585,15 +590,15 @@ table {
     text-align: center !important;
     font-family: Calibri;
     color: #fff;
-    border: 1px solid #088A29;
-    background-color: #088A29;
+    border: 1px solid #088A29 !important;
+    background-color: #088A29 !important;
 }
 
 .accept-btn2 {
     height: 35px !important;
     width: 100%;
     vertical-align: middle !important;
-    background-color: #088A29;
+    background-color: #088A29 !important;
     color: #fff;
 }
 
@@ -642,21 +647,22 @@ table {
 }
 
 .k-i-calendar {
-    padding: 10% !important;
+    /*padding: 10% !important;
     margin-bottom: 5% !important;
     margin-left: 5% !important;
-    margin-right: 5% !important;
-    background-image: url('../img/dateicon.png') !important;
-    background-position: 0px !important;
+    margin-right: 5% !important;*/
+    /*background-image: url('../img/dateicon.png') !important;*/
+    /*background-position: 0px !important;*/
 }
 
 .k-i-clock {
-    padding: 10% !important;
+   margin-left: 20px !important;
+    /*padding: 10% !important;
     margin-bottom: 5% !important;
     margin-left: 5% !important;
-    margin-right: 5% !important;
-    background-image: url('../img/timeicon.png') !important;
-    background-position: 0px !important;
+    margin-right: 5% !important;*/
+    /*background-image: url('../img/timeicon.png') !important;*/
+    /*background-position: 0px !important;*/
 }
 
 .k-picker-wrap {
@@ -706,8 +712,8 @@ table {
     text-align: center !important;
     font-family: Calibri;
     color: #fff;
-    border: 1px solid #088A29;
-    background-color: #8B0000;
+    border: 1px solid #088A29 !important;
+    background-color: #8B0000 !important;
     float: right;
 }
 
@@ -770,16 +776,15 @@ table {
     background-color: rgb(229, 227, 223);
     top: 0;
     left: 0;
-    z-index:1;
-   
+    z-index: 1;
 }
 
 #directions-panel1 {
-   height: auto;
-    overflow:auto;
-    background:ORANGE;
-    position:relative;
-    top:0;
+    height: auto;
+    overflow: auto;
+    background: ORANGE;
+    position: relative;
+    top: 0;
 }
 
 @media print {
@@ -794,3 +799,14 @@ table {
         width: 95%;
     }
 }
+
+.callMe {
+    color: darkblue;
+    background: url('../img/phoneicon.ico') no-repeat !important;
+    background-position: 3px !important;
+}
+
+    .callMe > * {
+        margin-left: 10px;
+        font-weight: 900;
+    }
